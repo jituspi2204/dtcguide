@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BusService {
@@ -23,9 +24,17 @@ public class BusService {
         return mongoTemplate.find(query, Bus.class);
     }
 
+    public List<BusMapper> getAllBusesList(){
+        Query query = new Query();
+        query.fields().include("bus_no", "route_id");
+        return mongoTemplate.find(query, BusMapper.class);
+    }
+
 
     public Bus getBusDetailsByRouteId(String routeId){
-        return busRepository.findBusByRouteId(routeId).orElseGet(null);
+
+        Optional<Bus> bus =  busRepository.findBusByRouteId(routeId);
+        return bus.orElse(null);
     }
 }
 

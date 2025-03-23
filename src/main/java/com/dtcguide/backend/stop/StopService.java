@@ -26,8 +26,12 @@ public class StopService {
 
     public List<StopMapper> getStopMapper(List<String> stops){
         Query query = Query.query(Criteria.where("stop_id").in(stops));
-        System.out.println(stops);
+//        System.out.println(stops);
         return mongoTemplate.find(query, StopMapper.class);
+    }
+
+    public List<StopMapper> getAllMapper(){
+        return mongoTemplate.findAll(StopMapper.class);
     }
 
 
@@ -40,7 +44,7 @@ public class StopService {
         Query query = Query.query(Criteria.where("stop_id").in(stops));
         query.fields().include("stop_lat", "stop_lon", "stop_id");
         List<Stop> result = mongoTemplate.find(query, Stop.class);
-        System.out.println(result);
+//        System.out.println(result);
         Map<String, List<Double>> geoMap = new HashMap<>();
         for(Stop stop: result){
             geoMap.put(stop.getStopId(), List.of(stop.getStopLat(), stop.getStopLon()));

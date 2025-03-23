@@ -11,7 +11,7 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 		BusRouteGraph.createGraph();
 //		BusRouteGraph.displayBuses();
-//		System.out.println(BusRouteGraph.bfsMinStopPath("AnandViharI.S.B.T" , "PalamCrossing"));
+//		System.out.println(BusRouteGraph.bfsMinStopPath("SheikhSaraiPhase2" , "JanakpuriC-2"));
 	}
 
 

@@ -35,6 +35,12 @@ public class StopController {
         return new ResponseEntity<>(geoLocations, HttpStatus.OK);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getStopMap(){
+        List<StopMapper> result = stopService.getAllMapper();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
 
 

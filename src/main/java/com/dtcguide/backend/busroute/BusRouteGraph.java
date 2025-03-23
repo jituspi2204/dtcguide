@@ -89,14 +89,16 @@ public class BusRouteGraph {
 
         visitedStops.add(source);
         while(!queue.isEmpty()){
+
             Node currentNode = queue.poll();
             String stop = currentNode.stop;
             String result = currentNode.result;
             if(stop.equals(destination)){
+//                System.out.print("output : "+result);
                 result= result.substring(1);
                 String[] arr = result.split("#");
                 Map<String, List<String>> path = new HashMap<>();
-                path.put("stops" , new ArrayList<>());
+                path.put("stops_id" , new ArrayList<>());
                 path.put("buses" , new ArrayList<>());
                 List<String> changeBuses = new ArrayList<>();
                 List<String> changeStops = new ArrayList<>();
@@ -105,39 +107,36 @@ public class BusRouteGraph {
                     changeStops.add(change[0]);
                     changeBuses.add(change[1]);
                 }
+//                System.out.println(changeStops);
+//                System.out.println(changeBuses);
+
                 changeStops.add(destination);
 
-                for(int i = 1; i < changeStops.size();i++){
+                for(int i = 0; i < changeBuses.size();i++){
                     int startIdx = busToStops
-                            .get(changeBuses.get(i-1))
-                            .indexOf(changeStops.get(i - 1));
-                    int endIdx = busToStops
-                            .get(changeBuses.get(i-1))
+                            .get(changeBuses.get(i))
                             .indexOf(changeStops.get(i));
-                    if(startIdx < endIdx){
-                       for(int j = startIdx; j <= endIdx;j++){
-                           path.get("stops").add(busToStops.get(changeBuses.get(i-1)).get(j) );
-                           path.get("buses").add(changeBuses.get(i-1));
-
-                       }
-
-                    }else{
-                        for(int j = startIdx; j >= endIdx;j--){
-                            path.get("stops").add(busToStops.get(changeBuses.get(i-1)).get(j) );
-                            path.get("buses").add(changeBuses.get(i-1));
-                        }
+                    int endIdx = busToStops
+                            .get(changeBuses.get(i))
+                            .indexOf(changeStops.get(i + 1));
+                    for(int j = startIdx; j <= endIdx;j++){
+                        path.get("stops_id").add(busToStops.get(changeBuses.get(i)).get(j) );
+                        path.get("buses").add(changeBuses.get(i));
                     }
                 }
                 return path;
             }
 
-
             //explore all buses from current stop
             for(String bus : stopToBuses.getOrDefault(stop, new HashSet<>())){
                 if(visitedBuses.contains(bus)) continue;
                 visitedBuses.add(bus);
-
-                for(String nextStop : busToStops.get(bus)){
+                int idx = busToStops
+                        .get(bus)
+                        .indexOf(stop);
+                if(idx == -1) continue;
+                for(int i = idx; i < busToStops.get(bus).size();i++){
+                    String nextStop = busToStops.get(bus).get(i);
                     if(!visitedStops.contains(nextStop)){
                         visitedStops.add(nextStop);
                         queue.add(new Node(nextStop,
@@ -154,77 +153,9 @@ public class BusRouteGraph {
 
 
 
-    public static List<Map<String, List<String>>> bfsAllStopPath(String source, String destination){
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(new Node(source, ""));
-        Set<String> visitedStops = new HashSet<>();
-        Set<String> visitedBuses = new HashSet<>();
-
-        List<Map<String, List<String>>> ans = new ArrayList<>();
-
-        visitedStops.add(source);
-        while(!queue.isEmpty()){
-            Node currentNode = queue.poll();
-            String stop = currentNode.stop;
-            String result = currentNode.result;
-            if(stop.equals(destination)){
-                result= result.substring(1);
-                String[] arr = result.split("#");
-                Map<String, List<String>> path = new HashMap<>();
-                path.put("stops" , new ArrayList<>());
-                path.put("buses" , new ArrayList<>());
-                List<String> changeBuses = new ArrayList<>();
-                List<String> changeStops = new ArrayList<>();
-                for (String s : arr) {
-                    String[] change = s.split("@");
-                    changeStops.add(change[0]);
-                    changeBuses.add(change[1]);
-                }
-                changeStops.add(destination);
-
-                for(int i = 1; i < changeStops.size();i++){
-                    int startIdx = busToStops
-                            .get(changeBuses.get(i-1))
-                            .indexOf(changeStops.get(i - 1));
-                    int endIdx = busToStops
-                            .get(changeBuses.get(i-1))
-                            .indexOf(changeStops.get(i));
-                    if(startIdx < endIdx){
-                        for(int j = startIdx; j <= endIdx;j++){
-                            path.get("stops").add(busToStops.get(changeBuses.get(i-1)).get(j) );
-                            path.get("buses").add(changeBuses.get(i-1));
-                        }
-
-                    }else{
-                        for(int j = startIdx; j >= endIdx;j--){
-                            path.get("stops").add(busToStops.get(changeBuses.get(i-1)).get(j) );
-                            path.get("buses").add(changeBuses.get(i-1));
-                        }
-                    }
-
-                }
-                ans.add(path);
-            }
-
-
-            //explore all buses from current stop
-            for(String bus : stopToBuses.getOrDefault(stop, new HashSet<>())){
-                if(visitedBuses.contains(bus)) continue;
-                visitedBuses.add(bus);
-
-                for(String nextStop : busToStops.get(bus)){
-                    if(!visitedStops.contains(nextStop)){
-                        visitedStops.add(nextStop);
-                        queue.add(new Node(nextStop,
-                                result + "#"  + stop + "@" + bus));
-                    }
-                }
-
-            }
-
-
-        }
-        return ans;
+    public static List<Map<String, List<String>>>
+        bfsAllStopPath(String source, String destination){
+        return null;
     }
 
 }

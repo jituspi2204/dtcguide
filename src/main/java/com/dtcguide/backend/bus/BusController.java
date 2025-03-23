@@ -17,6 +17,15 @@ public class BusController {
     @GetMapping("/details/{routeId}")
     public ResponseEntity<?> busController(@PathVariable String routeId){
         Bus bus = busService.getBusDetailsByRouteId(routeId);
-        return new ResponseEntity<Bus>(bus, HttpStatus.OK);
+        if(bus != null){
+            return new ResponseEntity<Bus>(bus, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<String>("No bus details found!!", HttpStatus.NOT_FOUND);
+
+        }
+    }
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllBusList(){
+        return new ResponseEntity<>(busService.getAllBusesList(), HttpStatus.OK);
     }
 }
